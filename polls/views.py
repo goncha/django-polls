@@ -1,7 +1,9 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
+from django.utils import timezone
 from django.views import generic
+
 
 from polls.models import Poll, Choice
 
@@ -11,7 +13,9 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         '''Return the last five published polls.'''
-        return Poll.objects.order_by('-pub_date')[:5]
+        return Poll.objects.filter(
+            pub_date__lte=timezone.now()
+        ).order_by('-pub_date')[:5]
 
 class DetailView(generic.DetailView):
     model = Poll
